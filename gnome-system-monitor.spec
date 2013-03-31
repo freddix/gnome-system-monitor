@@ -1,11 +1,11 @@
 Summary:	GNOME process viewer and system monitor
 Name:		gnome-system-monitor
-Version:	3.6.1
+Version:	3.8.0
 Release:	1
 License:	GPL v2+
 Group:		X11/Applications
-Source0:	http://ftp.gnome.org/pub/gnome/sources/gnome-system-monitor/3.6/%{name}-%{version}.tar.xz
-# Source0-md5:	a4f143e1f07455182a7119e9fcc604fc
+Source0:	http://ftp.gnome.org/pub/gnome/sources/gnome-system-monitor/3.8/%{name}-%{version}.tar.xz
+# Source0-md5:	43d67ddb7089f88e4a22b79dfd80dbd9
 URL:		http://www.gnome.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
