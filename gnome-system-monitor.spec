@@ -1,21 +1,18 @@
 Summary:	GNOME process viewer and system monitor
 Name:		gnome-system-monitor
-Version:	3.8.0
+Version:	3.12.1
 Release:	1
 License:	GPL v2+
 Group:		X11/Applications
-Source0:	http://ftp.gnome.org/pub/gnome/sources/gnome-system-monitor/3.8/%{name}-%{version}.tar.xz
-# Source0-md5:	43d67ddb7089f88e4a22b79dfd80dbd9
+Source0:	http://ftp.gnome.org/pub/gnome/sources/gnome-system-monitor/3.12/%{name}-%{version}.tar.xz
+# Source0-md5:	34468b395e674eb6b87f16506d716054
 URL:		http://www.gnome.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
-BuildRequires:	gnome-doc-utils
-BuildRequires:	gtkmm-devel
+BuildRequires:	gtkmm3-devel
 BuildRequires:	libgtop-devel
-BuildRequires:	libwnck-devel
 BuildRequires:	pkg-config
-Requires(post,preun):	GConf
-Suggests:	lsb-release
+Requires(post,postun):	glib-gio-gsettings
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -30,14 +27,21 @@ from a process viewer.
 %prep
 %setup -q
 
+# kill gnome common deps
+%{__sed} -i -e '/GNOME_COMPILE_WARNINGS.*/d'	\
+    -i -e '/GNOME_MAINTAINER_MODE_DEFINES/d'	\
+    -i -e '/GNOME_COMMON_INIT/d'		\
+    -i -e '/GNOME_CXX_WARNINGS.*/d'		\
+    -i -e '/GNOME_DEBUG_CHECK/d' configure.ac
+
 %build
 %{__libtoolize}
 %{__aclocal}
 %{__autoconf}
 %{__automake}
 %configure \
-	--disable-schemas-install \
-	--disable-scrollkeeper
+	--disable-silent-rules	\
+	--enable-systemd
 %{__make}
 
 %install
@@ -46,27 +50,25 @@ rm -rf $RPM_BUILD_ROOT
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-rm -rf $RPM_BUILD_ROOT%{_datadir}/locale/{ca@valencia,en@shaw,ug}
+%{__rm} -r $RPM_BUILD_ROOT%{_datadir}/locale/{ca@valencia,en@shaw,ug}
 
-%find_lang %{name} --with-gnome --with-omf
+%find_lang %{name} --with-gnome
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %post
-%gconf_schema_install gnome-system-monitor.schemas
-%scrollkeeper_update_post
-
-%preun
-%gconf_schema_uninstall gnome-system-monitor.schemas
+%update_gsettings_cache
 
 %postun
-%scrollkeeper_update_postun
+%update_gsettings_cache
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/gnome-system-monitor
-%{_desktopdir}/*
-%{_pixmapsdir}/%{name}
-%{_sysconfdir}/gconf/schemas/gnome-system-monitor.schemas
+%dir %{_libdir}/gnome-system-monitor
+%attr(755,root,root) %{_libdir}/gnome-system-monitor/gsm-*
+%{_datadir}/glib-2.0/schemas/*.xml
+%{_datadir}/polkit-1/actions/org.gnome.gnome-system-monitor.policy
+%{_desktopdir}/gnome-system-monitor.desktop
 
