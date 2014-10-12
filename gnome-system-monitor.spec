@@ -1,15 +1,16 @@
 Summary:	GNOME process viewer and system monitor
 Name:		gnome-system-monitor
-Version:	3.12.1
+Version:	3.14.0
 Release:	1
 License:	GPL v2+
 Group:		X11/Applications
-Source0:	http://ftp.gnome.org/pub/gnome/sources/gnome-system-monitor/3.12/%{name}-%{version}.tar.xz
-# Source0-md5:	34468b395e674eb6b87f16506d716054
+Source0:	http://ftp.gnome.org/pub/gnome/sources/gnome-system-monitor/3.14/%{name}-%{version}.tar.xz
+# Source0-md5:	2aceb169b1446361f31be9283cedea43
 URL:		http://www.gnome.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	gtkmm3-devel
+BuildRequires:	itstool
 BuildRequires:	libgtop-devel
 BuildRequires:	pkg-config
 Requires(post,postun):	glib-gio-gsettings
@@ -49,8 +50,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
-
-%{__rm} -r $RPM_BUILD_ROOT%{_datadir}/locale/{ca@valencia,en@shaw,ug}
 
 %find_lang %{name} --with-gnome
 
